@@ -1,0 +1,24 @@
+<div class="board-container">
+  <div class="board" *ngFor="let board of dataInput?.boards">
+    <h3 class="board-title">
+      {{ board.title }}
+    </h3>
+
+    <div
+      class="board-task-container"
+      (dragleave)="onDrop($event, board.boardId)"
+    >
+      <div
+        class="board-task-card"
+        draggable="true"
+        (onDragStop)="onDragStop($event, board.boardId, card.id)"
+        *ngFor="let card of board.tasks"
+        [attr.aria-boardId]="board.boardId"
+        [attr.aria-cardId]="card.id"
+      >
+        <h3 class="task-title">{{ card.title }}</h3>
+        <p class="task-description">{{ card.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
