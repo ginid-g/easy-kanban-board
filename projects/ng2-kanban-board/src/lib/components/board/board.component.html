@@ -1,24 +1,29 @@
-<div class="board-container">
-  <div class="board" *ngFor="let board of dataInput?.boards">
-    <h3 class="board-title">
-      {{ board.title }}
-    </h3>
+<ng-container *ngIf="dataInput?.boards">
+  <div class="board-container">
+    <div class="board" *ngFor="let board of dataInput.boards">
+      <h3 class="board-title">
+        {{ board.title }}
+      </h3>
 
-    <div
-      class="board-task-container"
-      (dragleave)="onDrop($event, board.boardId)"
-    >
       <div
-        class="board-task-card"
-        draggable="true"
-        (onDragStop)="onDragStop($event, board.boardId, card.id)"
-        *ngFor="let card of board.tasks"
-        [attr.aria-boardId]="board.boardId"
-        [attr.aria-cardId]="card.id"
+        class="board-task-container"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event, board.boardId)"
+        [attr.data-id]="board.boardId"
       >
-        <h3 class="task-title">{{ card.title }}</h3>
-        <p class="task-description">{{ card.description }}</p>
+        <div
+          class="board-task-card"
+          draggable="true"
+          [id]="board.boardId + '_' + card.id"
+          (drag)="onDrag($event)"
+          (dragend)="onDragEnd($event)"
+          (dragstart)="onDragStart($event, board.boardId, card.id)"
+          *ngFor="let card of board.tasks"
+        >
+          <h3 class="task-title">{{ card.title }}</h3>
+          <p class="task-description">{{ card.description }}</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</ng-container>

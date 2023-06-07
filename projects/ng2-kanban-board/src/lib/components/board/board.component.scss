@@ -4,40 +4,45 @@
   height: 100dvh;
   overflow-x: scroll;
   display: flex;
-  background: #f1f1f1;
 
   .board {
     width: 400px;
-    margin: 0 auto;
-
+    margin: 0 40px;
     font-family: "circular";
+
     .board-title {
       font-size: 20px;
       padding: 0px 30px;
     }
-  }
 
-  .board-task-container {
-    height: 100%;
-    width: 100%;
-    padding: 5px;
-
-    .board-task-card {
-      background: white;
-      margin: 10px;
-      padding: 15px;
+    .board-task-container {
+      background: #f1f1f1;
       border-radius: 25px;
-      min-height: 180px;
+      height: 100%;
+      width: 100%;
+      padding: 5px;
 
-      .task-title {
-        font-size: 18px;
-      }
+      .board-task-card {
+        background: white;
+        margin: 10px;
+        padding: 15px;
+        border-radius: 25px;
+        min-height: 180px;
 
-      .task-description {
-        font-size: 15px;
-        color: #262626;
-        font-weight: 400;
+        .task-title {
+          font-size: 18px;
+        }
+
+        .task-description {
+          font-size: 15px;
+          color: #262626;
+          font-weight: 400;
+        }
       }
     }
   }
+}
+
+.card-dragging {
+  opacity: 0;
 }
