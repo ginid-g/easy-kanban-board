@@ -21,28 +21,38 @@ export class Ng2KanbanBoardComponent {
         ],
       },
       {
-        title: 'TODO',
+        title: 'In Progress',
         boardId: 2,
         tasks: [
           {
             id: 2,
-            title: 'Start building UI',
+            title: 'Code FrontEnd',
             description: 'Make best UI in the world',
             comments: [],
           },
         ],
       },
       {
-        title: 'TODO',
+        title: 'Final Testing',
         boardId: 3,
         tasks: [
           {
             id: 3,
-            title: 'Start building UI',
+            title: 'Integrate APIs',
             description: 'Make best UI in the world',
             comments: [],
           },
         ],
+      },
+      {
+        title: 'Completed ',
+        boardId: 4,
+        tasks: [],
+      },
+      {
+        title: 'Deployed',
+        boardId: 5,
+        tasks: [],
       },
     ],
   };
