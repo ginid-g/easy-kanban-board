@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 interface IComment {
   userName: string;
@@ -7,7 +7,7 @@ interface IComment {
 }
 
 interface ITask {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   comments: IComment[];
@@ -15,7 +15,7 @@ interface ITask {
 
 interface IBoard {
   title: string;
-  boardId: number;
+  boardId: number | string;
   tasks: ITask[];
 }
 
@@ -24,10 +24,19 @@ interface IData {
 }
 
 interface IDraggedItem {
-  boardId: number | null;
-  taskId: number | null;
+  boardId: number | string | null;
+  taskId: number | string | null;
 }
 
+interface IUsers {
+  id: number | string;
+  name: string;
+}
+
+interface IBoardChangeOutput {
+  newBoardId: number | string;
+  taskId: number | string;
+}
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -35,11 +44,15 @@ interface IDraggedItem {
 })
 export class BoardComponent {
   @Input('dataInput') dataInput: IData = { boards: [] };
+  @Input('users') users: IUsers[] = [];
 
   dragedItem: IDraggedItem = {
     boardId: null,
     taskId: null,
   };
+
+  @Output('onBoardChange') onBoardChange: EventEmitter<IBoardChangeOutput> =
+    new EventEmitter();
 
   onDrag(event: any) {
     event.preventDefault();
@@ -51,7 +64,7 @@ export class BoardComponent {
     event.target.classList.remove('card-dragging');
   }
 
-  onDragStart(event: any, boardId: number, taskId: number) {
+  onDragStart(event: any, boardId: number | string, taskId: number | string) {
     event.dataTransfer?.setData('text/plain', 'Draggable Element');
     this.dragedItem.boardId = boardId;
     this.dragedItem.taskId = taskId;
@@ -61,7 +74,7 @@ export class BoardComponent {
     event.preventDefault();
   }
 
-  onDrop(event: any, boardId: number) {
+  onDrop(event: any, boardId: number | string) {
     event.preventDefault();
 
     if (boardId) {
@@ -74,20 +87,33 @@ export class BoardComponent {
           (board) => board.boardId == boardId
         );
 
-        if (newBoardIndex !== -1) {
-          this.dataInput?.boards[newBoardIndex].tasks.reverse().push(card);
+        const currentBoardIndex = this.dataInput.boards.findIndex(
+          (board) => board.boardId == this.dragedItem.boardId
+        );
+
+        // Return if card is dropped in same board
+        if (newBoardIndex == currentBoardIndex) {
+          return;
         }
+
+        // Move card to new board
+        if (newBoardIndex !== -1) {
+          this.dataInput?.boards[newBoardIndex].tasks.push(card);
+        }
+
+        // Remove card from the current board
+        if (currentBoardIndex !== -1) {
+          this.dataInput.boards[currentBoardIndex].tasks =
+            this.dataInput.boards[currentBoardIndex].tasks.filter(
+              (task) => task.id != this.dragedItem.taskId
+            );
+        }
+
+        this.onBoardChange.emit({
+          newBoardId: boardId,
+          taskId: this.dragedItem.taskId || 0,
+        });
       }
-    }
-
-    const currentBoardIndex = this.dataInput.boards.findIndex(
-      (board) => board.boardId == this.dragedItem.boardId
-    );
-
-    if (currentBoardIndex !== -1) {
-      this.dataInput.boards[currentBoardIndex].tasks = this.dataInput.boards[
-        currentBoardIndex
-      ].tasks.filter((task) => task.id != this.dragedItem.taskId);
     }
   }
 }
